@@ -20,14 +20,37 @@ namespace rTunes
     /// </summary>
     public partial class MainWindow : Window
     {
+        internal static MainWindow main;
+        internal string Track
+        {
+            set { Dispatcher.Invoke(new Action(() => { lblTrack.Content = value; })); }
+        }
+        internal string Lyrics
+        {
+            set { Dispatcher.Invoke(new Action(() => { tbLyrics.Text = value; })); }
+        }
+
+
         public MainWindow()
         {
             InitializeComponent();
+            main = this;
+            lblTrack.Content = RalfiTunes.FooGetCurrentTrack();
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
+        private void btnPrev_Click(object sender, RoutedEventArgs e)
         {
-            RalfiTunes.foo();
+            RalfiTunes.Prev();
+        }
+
+        private void btnPlayPause_Click(object sender, RoutedEventArgs e)
+        {
+            RalfiTunes.PlayPause();
+        }
+
+        private void btnNext_Click(object sender, RoutedEventArgs e)
+        {
+            RalfiTunes.Next();
         }
     }
 }
