@@ -13,5 +13,6 @@ namespace rTunes
     /// </summary>
     public partial class App : Application
     {
+        static string foo = "Ralf Winkler";
     }
 }
