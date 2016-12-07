@@ -15,29 +15,38 @@ namespace rTunes
 
         static RalfiTunes()
         {
-            iTunes.OnPlayerPlayEvent += new _IiTunesEvents_OnPlayerPlayEventEventHandler(app_OnPlayerPlayEvent);
+            iTunes.OnPlayerPlayEvent += new _IiTunesEvents_OnPlayerPlayEventEventHandler(OnPlay);
         }
 
-        static void app_OnPlayerPlayEvent(object iTrack)
+        static void OnPlay(object iTrack)
         {
             IITTrack currentTrack = (IITTrack)iTrack;
-            string trackName = currentTrack.Name;
-            string artist = currentTrack.Artist;
-            string album = currentTrack.Album;
+            if (currentTrack != null)
+            {
+                string trackName = currentTrack.Name;
+                string artist = currentTrack.Artist;
+                string album = currentTrack.Album;
+                MainWindow.main.Track = $"{trackName}\n{artist}";
 
-            IITFileOrCDTrack fileTrack = currentTrack as IITFileOrCDTrack;
-            string lyrics = fileTrack.Lyrics;
-
-            MainWindow.main.Track = $"{trackName}\n{artist}";
-            MainWindow.main.Lyrics = lyrics;
+                IITFileOrCDTrack fileTrack = currentTrack as IITFileOrCDTrack;
+                if (fileTrack != null)
+                {
+                    string lyrics = fileTrack.Lyrics;
+                    MainWindow.main.Lyrics = lyrics;
+                }
+            }
         }
 
         public static string FooGetCurrentTrack()
         {
             var currentTrack = iTunes.CurrentTrack;
-            string trackName = currentTrack.Name;
-            string artist = currentTrack.Artist;
-            return $"{trackName}\n{artist}";
+            if (currentTrack != null)
+            {
+                string trackName = currentTrack.Name;
+                string artist = currentTrack.Artist;
+                return $"{trackName}\n{artist}";
+            }
+            return "N/A";
         }
 
         public static void Prev()
