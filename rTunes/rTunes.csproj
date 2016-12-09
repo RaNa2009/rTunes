@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="RalfiTunes.cs" />
+    <Compile Include="StringToImageConverter.cs" />
     <Compile Include="ViewModels\Track.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

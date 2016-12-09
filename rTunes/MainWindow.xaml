@@ -1,17 +1,25 @@
-﻿<Window x:Class="rTunes.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:rTunes"
+        xmlns:ViewModels="clr-namespace:rTunes.ViewModels" x:Class="rTunes.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="rTunes" Height="392" Width="761" Background="#FFD9E7F7">
     <Grid>
-        <Button x:Name="btnPrev" Content="&lt;&lt;" HorizontalAlignment="Left" Margin="10,67,0,0" VerticalAlignment="Top" Width="75" Click="btnPrev_Click"/>
-        <Button x:Name="btnPlayPause" Content="Play" HorizontalAlignment="Left" Margin="90,67,0,0" VerticalAlignment="Top" Width="75" Click="btnPlayPause_Click"/>
-        <Button x:Name="btnNext" Content="&gt;&gt;" HorizontalAlignment="Left" Margin="170,67,0,0" VerticalAlignment="Top" Width="75" Click="btnNext_Click"/>
-        <Label x:Name="lblTrack" Content="" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Width="235" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold"/>
-        <TextBox x:Name="tbLyrics" HorizontalAlignment="Left" Height="242" Margin="250,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="257" TextAlignment="Center"/>
-
+        <Button x:Name="btnPrev" Content="&lt;&lt;" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="btnPrev_Click" Height="25"/>
+        <Button x:Name="btnPlayPause" Content="Play" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75" Click="btnPlayPause_Click" Height="25"/>
+        <Button x:Name="btnNext" Content="&gt;&gt;" HorizontalAlignment="Left" Margin="170,10,0,0" VerticalAlignment="Top" Width="75" Click="btnNext_Click" Height="25"/>
+        <StackPanel Margin="10,92,508,10" Orientation="Vertical">
+            <StackPanel.Resources>
+                <local:StringToImageConverter x:Key="imageConverter" />
+            </StackPanel.Resources>
+            <Label x:Name="lblName" Content="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="235" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
+            <Label x:Name="lblArtist" Content="{Binding Artist}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="235" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
+            <Label x:Name="lblAlbum" Content="{Binding Album}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="235" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
+            <Image x:Name="imgCover" Source="{Binding Cover,Converter={StaticResource imageConverter}}" Height="162"/>
+        </StackPanel>
+        <TextBox x:Name="tbLyrics" Text="{Binding Lyrics}" Margin="250,10,10,10" TextWrapping="Wrap" TextAlignment="Center"/>
     </Grid>
 </Window>

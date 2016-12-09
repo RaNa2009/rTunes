@@ -1,4 +1,5 @@
-﻿using System;
+﻿using rTunes.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Globalization;
 
 namespace rTunes
 {
@@ -20,24 +22,17 @@ namespace rTunes
     /// </summary>
     public partial class MainWindow : Window
     {
-        internal static MainWindow main;
-        internal string Track
-        {
-            set { Dispatcher.Invoke(new Action(() => { lblTrack.Content = value; })); }
-        }
-        internal string Lyrics
-        {
-            set { Dispatcher.Invoke(new Action(() => { tbLyrics.Text = value; })); }
-        }
-
+        static public Track foo = new Track();
 
         public MainWindow()
         {
             InitializeComponent();
-            main = this;
-            lblTrack.Content = RalfiTunes.FooGetCurrentTrack();
-        }
+            DataContext = foo;
 
+            RalfiTunes.UpdateCurrentTrack();
+        }
+    
+       
         private void btnPrev_Click(object sender, RoutedEventArgs e)
         {
             RalfiTunes.Prev();
