@@ -1,11 +1,7 @@
-﻿using rTunes.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
+using System.Windows.Threading;
+
 
 namespace rTunes
 {
@@ -14,5 +10,23 @@ namespace rTunes
     /// </summary>
     public partial class App : Application
     {
+        public App() : base()
+        {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(GlobalExceptionHandler);
+            Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(AppDispatcherUnhandledException);
+        }
+
+        void GlobalExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception ex = (Exception)args.ExceptionObject;
+            Console.WriteLine("Global Exception caught: " + ex.Message);
+        }
+        void AppDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
+        {
+            Exception ex = args.Exception;
+            Console.WriteLine("Dispatcher Exception caught: " + ex.Message);
+            args.Handled = true;
+        }
     }
 }

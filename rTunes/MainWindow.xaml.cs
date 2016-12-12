@@ -1,19 +1,6 @@
-﻿using rTunes.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Globalization;
+﻿using System.Windows;
+using iTunesWrapper;
+using System.Diagnostics;
 
 namespace rTunes
 {
@@ -22,30 +9,36 @@ namespace rTunes
     /// </summary>
     public partial class MainWindow : Window
     {
-        static public Track foo = new Track();
+        public static iTunes iTunesPlayer = iTunes.Instance;
+        private Track _track;
+
+        private void PlayHandler(object sender, iTunesEventArgs args)
+        {
+            Debug.WriteLine(args.Title);
+            _track = iTunesPlayer.GetCurrentTrack();
+        }
 
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = foo;
-
-            RalfiTunes.UpdateCurrentTrack();
+            iTunesPlayer.Play += PlayHandler;
+            //_track = iTunesPlayer.GetCurrentTrack();
         }
-    
-       
+
+
         private void btnPrev_Click(object sender, RoutedEventArgs e)
         {
-            RalfiTunes.Prev();
+            iTunesPlayer.Prev();
         }
 
         private void btnPlayPause_Click(object sender, RoutedEventArgs e)
         {
-            RalfiTunes.PlayPause();
+            iTunesPlayer.PlayPause();
         }
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
         {
-            RalfiTunes.Next();
+            iTunesPlayer.Next();
         }
     }
 }
