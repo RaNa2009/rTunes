@@ -1,7 +1,6 @@
 ﻿using CommandLine;
 using CommandLine.Text;
 
-
 namespace iTunesConsole
 {
     class PlaySubOptions { }
@@ -36,5 +35,4 @@ namespace iTunesConsole
             return help;
         }
     }
-
 }

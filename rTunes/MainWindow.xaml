@@ -4,22 +4,31 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:rTunes"
-        xmlns:ViewModels="clr-namespace:rTunes.ViewModels" xmlns:iTunesWrapper="clr-namespace:iTunesWrapper;assembly=iTunesWrapper" x:Class="rTunes.MainWindow"
+        xmlns:iTunesWrapper="clr-namespace:iTunesWrapper;assembly=iTunesWrapper" 
+        x:Class="rTunes.MainWindow"
         mc:Ignorable="d"
-        Title="rTunes" Height="392" Width="761" Background="#FFD9E7F7">
-        <Grid>
-        <Button x:Name="btnPrev" Content="&lt;&lt;" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="btnPrev_Click" Height="25"/>
-        <Button x:Name="btnPlayPause" Content="Play" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75" Click="btnPlayPause_Click" Height="25"/>
-        <Button x:Name="btnNext" Content="&gt;&gt;" HorizontalAlignment="Left" Margin="170,10,0,0" VerticalAlignment="Top" Width="75" Click="btnNext_Click" Height="25"/>
+        Title="rTunes" 
+        Height="392" Width="761" Background="#FFD9E7F7">
+    <Grid>
+        <Button x:Name="btnPrev" Content="&lt;&lt;" Command="{Binding Path=PrevCommand}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Height="25"/>
+        <Button x:Name="btnPlayPause" Content="Play" Command="{Binding Path=PlayPauseCommand}" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75" Height="25"/>
+        <Button x:Name="btnNext" Content="&gt;&gt;" Command="{Binding Path=NextCommand}" HorizontalAlignment="Left" Margin="170,10,0,0" VerticalAlignment="Top" Width="75" Height="25">
+            <Button.InputBindings>
+                <MouseBinding Gesture="RightClick" Command="{Binding Path=Plus20SecsCommand}" />
+            </Button.InputBindings>
+        </Button>
         <StackPanel Margin="10,40,508,10" Orientation="Vertical">
             <StackPanel.Resources>
                 <local:StringToImageConverter x:Key="imageConverter" />
             </StackPanel.Resources>
-            <Label x:Name="lblName" Content="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="235" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
-            <Label x:Name="lblArtist" Content="{Binding Artist}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="235" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
-            <Label x:Name="lblAlbum" Content="{Binding Album}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="235" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
-            <Image x:Name="imgCover" Source="{Binding Cover, Converter={StaticResource imageConverter}}" Height="214" Stretch="UniformToFill"/>
+            <Label x:Name="lblName" Content="{Binding CurrentTrack.Name}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="235" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
+            <Label x:Name="lblArtist" Content="{Binding CurrentTrack.Artist}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="235" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
+            <Label x:Name="lblAlbum" Content="{Binding CurrentTrack.Album}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="235" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
+            <Image x:Name="imgCover" Source="{Binding CurrentTrack.Cover, Converter={StaticResource imageConverter}}" Height="214" Stretch="UniformToFill"/>
         </StackPanel>
-        <TextBox x:Name="tbLyrics" Text="{Binding Lyrics}" Margin="250,10,10,10" TextWrapping="Wrap" TextAlignment="Center"/>
+        <TextBox x:Name="tbLyrics" Text="{Binding CurrentTrack.Lyrics}" Margin="250,73,10,10" TextWrapping="Wrap" TextAlignment="Center"/>
+        <Button x:Name="btnNext_Copy" Content="Test" Command="{Binding TestCommand}" HorizontalAlignment="Left" Margin="250,10,0,0" VerticalAlignment="Top" Width="75" Height="25"/>
+        <local:PlayerControl HorizontalAlignment="Left" Margin="325,10,0,0" VerticalAlignment="Top" Height="57" Width="321"/>
+
     </Grid>
 </Window>

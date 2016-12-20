@@ -14,9 +14,6 @@ namespace iTunesConsole
         static private void PlayHandler(object sender, iTunesEventArgs args)
         {
             Console.WriteLine("PlayHandler - " + args.Title);
-
-            var track = iTunesPlayer.GetCurrentTrack();
-            Console.WriteLine(track.toString());
         }
         static private void StopHandler(object sender, iTunesEventArgs args)
         {
@@ -57,8 +54,8 @@ namespace iTunesConsole
                     //foreach (Track)
                 }
             }
-
-            var foo = Console.ReadKey();
+            Console.Write("Press any key");
+            Console.ReadKey();
         }
     }
 }

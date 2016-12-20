@@ -1,9 +1,6 @@
 ﻿using iTunesLib;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace iTunesWrapper
 {
@@ -49,10 +46,6 @@ namespace iTunesWrapper
         public event EventHandler<iTunesEventArgs> Play;
         public event EventHandler<iTunesEventArgs> Stop;
 
-        /// <summary>
-        /// Called when iTunes Event "Play" occurs (i.e. new song, next song)
-        /// </summary>
-        /// <param name="iTrack"></param>
         private void PlayerPlayEvent(object iTrack)
         {
             var track = iTrack as IITTrack;
@@ -68,7 +61,6 @@ namespace iTunesWrapper
         {
             _iTunes.PreviousTrack();
         }
-
         public void PlayPause()
         {
             if (_iTunes.PlayerState == ITPlayerState.ITPlayerStatePlaying)
@@ -76,36 +68,42 @@ namespace iTunesWrapper
             else
                 _iTunes.Play();
         }
-
         public void Next()
         {
             _iTunes.NextTrack();
         }
 
+        public void Plus20Secs()
+        {
+            _iTunes.PlayerPosition = _iTunes.PlayerPosition + 20;
+        }
         public Track GetCurrentTrack()
         {
             IITTrack currentTrack = _iTunes.CurrentTrack;
-            Track foo = new Track(currentTrack);
-            return foo;
+            if (currentTrack != null)
+            {
+                Track foo = new Track(currentTrack);
+                return foo;
+            }
+            return null;
         }
-
         public Playlist GetCurrentPlaylist()
         {
             var pl = _iTunes.CurrentPlaylist;
 
             if (pl != null)
             {
-                var tracks = pl.Tracks;
-                for (int i = 1; i <= tracks.Count; i++)
+                var tracks = new List<Track>();
+                for (int i = 1; i <= pl.Tracks.Count; i++)
                 {
-                    Console.WriteLine($"#{i} : {tracks[i].Name}");
+                    tracks.Add(new iTunesWrapper.Track(pl.Tracks[i], false));
                 }
 
                 return new Playlist
                 {
                     Name = pl.Name,
                     Size = pl.Size,
-                    Tracks = new List<Track>()
+                    Tracks = tracks
                 };
             }
             return new Playlist();

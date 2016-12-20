@@ -6,82 +6,75 @@ using System.Runtime.CompilerServices;
 
 namespace iTunesWrapper
 {
-    public class Track : INotifyPropertyChanged
+    public class Track
     {
-        private string _name;
-        private string _artist;
-        private string _album;
-        private string _lyrics;
-        private string _genre;
-        private string _coverPath;
-
+        public string Name { get; set; }
+        public string Artist { get; set; }
+        public string Album { get; set; }
+        public string Lyrics { get; set; }
+        public string Genre { get; set; }
+        public string Cover { get; set; }
+        public int PlayOrderIndex { get; set; }
+        public int SampleRate { get; set; }
+        public int BitRate { get; set; }
         public Track() { }
 
-        public Track(IITTrack track)
+        public Track(IITTrack track, bool SaveArtworkToDisk = true)
         {
-            _name = track.Name;
-            _artist = track.Artist;
-            _album = track.Album;
-            _genre = track.Genre;
+            Name = track.Name;
+            Artist = track.Artist;
+            Album = track.Album;
+            Genre = track.Genre;
+            PlayOrderIndex = track.PlayOrderIndex;
+            BitRate = track.BitRate;
+            SampleRate = track.SampleRate;
 
-            var artworkList = new List<Artwork>();
-            var artworkCollection = track.Artwork;
-            for (int i = 1; i <= artworkCollection.Count; i++)
+            if (SaveArtworkToDisk)
             {
-                var artwork = new Artwork();
-                artwork.Description = artworkCollection[i].Description;
-                switch (artworkCollection[i].Format)
+                var artworkList = new List<Artwork>();
+                var artworkCollection = track.Artwork;
+                for (int i = 1; i <= artworkCollection.Count; i++)
                 {
-                    case ITArtworkFormat.ITArtworkFormatUnknown: artwork.Format = "Unknown"; break;
-                    case ITArtworkFormat.ITArtworkFormatBMP: artwork.Format = "bmp"; break;
-                    case ITArtworkFormat.ITArtworkFormatJPEG: artwork.Format = "jpg"; break;
-                    case ITArtworkFormat.ITArtworkFormatPNG: artwork.Format = "png"; break;
+                    var artwork = new Artwork();
+                    artwork.Description = artworkCollection[i].Description;
+                    switch (artworkCollection[i].Format)
+                    {
+                        case ITArtworkFormat.ITArtworkFormatUnknown: artwork.Format = "Unknown"; break;
+                        case ITArtworkFormat.ITArtworkFormatBMP: artwork.Format = "bmp"; break;
+                        case ITArtworkFormat.ITArtworkFormatJPEG: artwork.Format = "jpg"; break;
+                        case ITArtworkFormat.ITArtworkFormatPNG: artwork.Format = "png"; break;
+                    }
+                    artwork.IsDownloadedArtwork = artworkCollection[i].IsDownloadedArtwork;
+                    artworkList.Add(artwork);
                 }
-                artwork.IsDownloadedArtwork = artworkCollection[i].IsDownloadedArtwork;
-                artworkList.Add(artwork);
-            }
 
-            string coverPath;
-            if (artworkCollection.Count > 0)
-            {
-                coverPath = System.IO.Path.Combine(Environment.CurrentDirectory, $"Art.{artworkList[0].Format}");
-                try
+                string coverPath;
+                if (artworkCollection.Count > 0)
                 {
-                    artworkCollection[1].SaveArtworkToFile(coverPath);
+                    coverPath = System.IO.Path.Combine(Environment.CurrentDirectory, $"Art.{artworkList[0].Format}");
+                    try
+                    {
+                        artworkCollection[1].SaveArtworkToFile(coverPath);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine($"Exception on SaveArtworkToFile Format [{artworkList[0].Format}] for [{track.Name}]");
+                    }
+                    Cover = coverPath;
                 }
-                catch (Exception)
-                {
-                    Console.WriteLine($"Exception on SaveArtworkToFile Format [{artworkList[0].Format}] for [{track.Name}]");
-                }
-                _coverPath = coverPath;
             }
 
             IITFileOrCDTrack fileTrack = track as IITFileOrCDTrack;
             if (fileTrack != null)
             {
-                _lyrics = fileTrack.Lyrics;
+                Lyrics = fileTrack.Lyrics;
             }
         }
 
         public override string ToString()
         {
-            return $"{_name}, {_artist}, {_album}, {_genre}";
+            return $"{Name}, {Artist}, {Album}, {Genre}";
         }
-        public string Name { get { return _name; } set { _name = value; Changed(); } }
-        public string Artist { get { return _artist; } set { _artist = value; Changed(); } }
-        public string Album { get { return _album; } set { _album = value; Changed(); } }
-        public string Lyrics { get { return _lyrics; } set { _lyrics = value; Changed(); } }
-        public string Genre { get { return _genre; } set { _genre = value; Changed(); } }
-        public string Cover { get { return _coverPath; } set { _coverPath = value; Changed(); } }
-
-        #region PropertyNotifcations
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void Changed([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion  
     }
 
     public class Artwork
