@@ -1,6 +1,9 @@
 ﻿using iTunesLib;
+using Microsoft.VisualStudio;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace iTunesWrapper
 {
@@ -72,7 +75,21 @@ namespace iTunesWrapper
         {
             _iTunes.NextTrack();
         }
-
+        public int GetPosition()
+        {
+            int result = 0;
+            try
+            {
+                result = _iTunes.PlayerPosition;
+            }
+            catch (COMException ex)
+            {
+                // If an unexpected error occurred, e.g. no track is being played, we get E_FAIL
+                if (ex.HResult != VSConstants.E_FAIL)
+                    Debug.WriteLine($"Unexpected COM error: {ex.Message} [HRESULT = 0x{ex.HResult,8:X}]");
+            }
+            return result;
+        }
         public void Plus20Secs()
         {
             _iTunes.PlayerPosition = _iTunes.PlayerPosition + 20;
@@ -93,17 +110,18 @@ namespace iTunesWrapper
 
             if (pl != null)
             {
-                var tracks = new List<Track>();
-                for (int i = 1; i <= pl.Tracks.Count; i++)
-                {
-                    tracks.Add(new iTunesWrapper.Track(pl.Tracks[i], false));
-                }
+                //var tracks = new List<Track>();
+                //for (int i = 1; i <= Math.Min(pl.Tracks.Count, 20); i++)
+                //{
+                //    tracks.Add(new Track(pl.Tracks[i], false));
+                //}
 
                 return new Playlist
                 {
                     Name = pl.Name,
+                    TrackCount = pl.Tracks.Count,
                     Size = pl.Size,
-                    Tracks = tracks
+                    Duration = pl.Duration
                 };
             }
             return new Playlist();

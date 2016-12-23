@@ -43,19 +43,26 @@ namespace iTunesConsole
 
                 if (invokedVerb == "play")
                 {
-                    Console.WriteLine("Play");
+                    Console.WriteLine("Verb: Play");
                     iTunesPlayer.PlayPause();
+                }
+
+                if (invokedVerb == "listen")
+                {
+                    Console.WriteLine("Verb: Listen - Press any key to cancel...");
+                    Console.ReadKey();
                 }
 
                 if (invokedVerb == "playlist")
                 {
+                    Console.WriteLine("Verb: Playlist");
                     Playlist pl = iTunesPlayer.GetCurrentPlaylist();
-                    Console.WriteLine($"Playlist [{pl.Name}] Tracks [{pl.TrackCount}]");
-                    //foreach (Track)
+                    var duration = new TimeSpan(0, 0, pl.Duration);
+                    Console.WriteLine($"Playlist [{pl.Name}] [Tracks {pl.TrackCount:N0}] " + 
+                        $"[Duration {duration.ToString(@"%d' Tage, 'hh\:mm\:ss' Stunden'")}] " +
+                        $"[Size {pl.Size / (1024*1024*1024):F2} GBytes]");
                 }
             }
-            Console.Write("Press any key");
-            Console.ReadKey();
         }
     }
 }

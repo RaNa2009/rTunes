@@ -17,6 +17,7 @@ namespace iTunesWrapper
         public int PlayOrderIndex { get; set; }
         public int SampleRate { get; set; }
         public int BitRate { get; set; }
+        public int Duration { get; set; }
         public Track() { }
 
         public Track(IITTrack track, bool SaveArtworkToDisk = true)
@@ -28,6 +29,7 @@ namespace iTunesWrapper
             PlayOrderIndex = track.PlayOrderIndex;
             BitRate = track.BitRate;
             SampleRate = track.SampleRate;
+            Duration = track.Duration;
 
             if (SaveArtworkToDisk)
             {

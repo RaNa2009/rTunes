@@ -5,13 +5,13 @@ namespace iTunesConsole
 {
     class PlaySubOptions { }
     class PlaylistSubOptions { }
-
+    class ListenSubOptions { }
     class Options
     {
-        public Options()
-        {
-            PlayVerb = new PlaySubOptions();
-        }
+        public Options() { }
+
+        [VerbOption("listen", HelpText = "Listen to iTunes, show events...")]
+        public ListenSubOptions ListenVerb { get; set; }
 
         [VerbOption("play", HelpText = "Play or pause iTunes")]
         public PlaySubOptions PlayVerb { get; set; }

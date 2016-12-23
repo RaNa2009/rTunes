@@ -11,6 +11,12 @@ namespace rTunes
     {
         public static iTunes iTunesPlayer = iTunes.Instance;
 
+        private int _position;
+        public int CurrentPosition {
+            get { return _position; }
+            set { _position = value;  Changed(); }
+        }
+
         private Track _currentTrack;
         public Track CurrentTrack {
             get { return _currentTrack; }
@@ -24,16 +30,19 @@ namespace rTunes
 
             Timer PositionTimer = new Timer(500);
             PositionTimer.Elapsed += new ElapsedEventHandler(PollPosition);
+            PositionTimer.Enabled = true;
 
             CurrentTrack = iTunesPlayer.GetCurrentTrack();
         }
 
-        private static void PollPosition(object source, ElapsedEventArgs e)
+        private void PollPosition(object source, ElapsedEventArgs e)
         {
-            //var pos = iTunesPlayer.GetPosition();
-
+            iTunesPlayer.GetPosition();
+            if (CurrentTrack != null)
+            {
+                CurrentPosition = iTunesPlayer.GetPosition();
+            }
         }
-
         private void PlayHandler(object sender, iTunesEventArgs args)
         {
             CurrentTrack = iTunesPlayer.GetCurrentTrack();

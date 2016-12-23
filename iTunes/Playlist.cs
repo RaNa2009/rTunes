@@ -8,9 +8,10 @@ namespace iTunesWrapper
 {
     public class Playlist
     {
-        public string Name { get; set; }
+        public int TrackCount;
+        public string Name { get; set; } = "N/A";
         public double Size { get; set; }
+        public int Duration { get; set; }
         public List<Track> Tracks { get; set; }
-        public int TrackCount { get { return Tracks != null ? Tracks.Count : 0; } }
     }
 }

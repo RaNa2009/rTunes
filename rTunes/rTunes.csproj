@@ -58,6 +58,7 @@
     <Compile Include="Controls\Player.xaml.cs">
       <DependentUpon>Player.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\PositionToTimeConverter.cs" />
     <Compile Include="rTunesCommands.cs" />
     <Compile Include="Converter\StringToImageConverter.cs" />
     <Compile Include="ViewModels\FooViewModel.cs" />
@@ -102,6 +103,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
