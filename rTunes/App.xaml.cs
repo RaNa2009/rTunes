@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
-
+using rLyrics;
 
 namespace rTunes
 {
@@ -10,13 +10,20 @@ namespace rTunes
     /// </summary>
     public partial class App : Application
     {
+        public static LyricsFetcher Lyrics = new LyricsFetcher();
+
+        public static Fetcher MyLyrics = new Fetcher();
+
         public App() : base()
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(GlobalExceptionHandler);
-            Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(AppDispatcherUnhandledException);
+            Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(AppDispatcherUnhandledException);
+
+            //Lyrics.Show();
         }
 
+        #region Global Exception Handlers
         void GlobalExceptionHandler(object sender, UnhandledExceptionEventArgs args)
         {
             Exception ex = (Exception)args.ExceptionObject;
@@ -28,5 +35,6 @@ namespace rTunes
             Console.WriteLine("Dispatcher Exception caught: " + ex.Message);
             args.Handled = true;
         }
+        #endregion
     }
 }

@@ -8,7 +8,7 @@
         x:Class="rTunes.MainWindow"
         mc:Ignorable="d"
         Title="rTunes" 
-        Height="477" Width="744" Background="#FFD9E7F7">
+        Height="477" Width="744" Left="1000" Top="100">
     <Grid>
         <StackPanel Margin="10,62,469,10" Orientation="Vertical">
             <StackPanel.Resources>
@@ -17,13 +17,14 @@
             <Label x:Name="lblName" Content="{Binding CurrentTrack.Name}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="264" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
             <Label x:Name="lblArtist" Content="{Binding CurrentTrack.Artist}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="264" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
             <Label x:Name="lblAlbum" Content="{Binding CurrentTrack.Album}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="264" BorderThickness="1" Background="#FFF7F7F7" FontWeight="Bold" Height="32"/>
-            <Image x:Name="imgCover" Source="{Binding CurrentTrack.Cover, Converter={StaticResource imageConverter}}" Height="227" Stretch="UniformToFill" Margin="0,0,10,0"/>
+            <Image x:Name="imgCover" Source="{Binding CurrentTrack.Cover, Converter={StaticResource imageConverter}}" Height="227" Stretch="UniformToFill" Margin="0,0,10,0" OpacityMask="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
         </StackPanel>
         <TextBox x:Name="tbLyrics" Text="{Binding CurrentTrack.Lyrics}" Margin="289,62,10,10" TextWrapping="Wrap" TextAlignment="Center"/>
         <Button x:Name="btnNext_Copy" Content="Test" Command="{Binding TestCommand}" HorizontalAlignment="Left" Margin="668,0,0,0" VerticalAlignment="Top" Width="58" Height="57"/>
         <local:PlayerControl  PlayPause="{Binding Path=PlayPauseCommand}"
                               Prev="{Binding Path=PrevCommand}"
                               Next="{Binding Path=NextCommand}"
+                              Plus20Secs="{Binding Path=Plus20SecsCommand}"
                               Position="{Binding CurrentPosition}"
                               MaxPosition="{Binding CurrentTrack.Duration}"
                               HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="57" Width="653"/>

@@ -17,3 +17,14 @@ Open Windows Explorer and navigate to your profile (typing %USERPROFILE% in the 
 Given that user profile folder is likely not the best location to store database files, we advise developers creating databases to always specify the location for the database files, like in this T-SQL example:
 
 create database foo on (name=‘foo’, filename=‘c:\DBs\foo.mdf’)
+
+## Lyrics Websites
+
+| URL  | Comment |
+|---|---|---|---|---|
+| http://4lyrics.eu  | Eurovision Songtexte
+|http://www.songtexte.com | search?q=artist&c=all
+|http://lyrics.wikia.com/wiki/ | artist:song (Replace whitespace with _)
+|http://www.lyricsmode.com/ | search.php?search=u2%20exit
+|Shazam | |
+

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTunesWrapper", "iTunes\iTu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTunesConsole", "iTunesConsole\iTunesConsole.csproj", "{737473DD-5159-4487-9D55-6FAE936C8355}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rLyrics", "rLyrics\rLyrics.csproj", "{5CFB52C4-C62E-4AB3-9309-321C58F62A3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{737473DD-5159-4487-9D55-6FAE936C8355}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{737473DD-5159-4487-9D55-6FAE936C8355}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{737473DD-5159-4487-9D55-6FAE936C8355}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CFB52C4-C62E-4AB3-9309-321C58F62A3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CFB52C4-C62E-4AB3-9309-321C58F62A3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CFB52C4-C62E-4AB3-9309-321C58F62A3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CFB52C4-C62E-4AB3-9309-321C58F62A3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

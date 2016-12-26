@@ -49,5 +49,12 @@ namespace rTunes
             get { return (ICommand)GetValue(NextProperty); }
             set { SetValue(NextProperty, value); }
         }
+        public static readonly DependencyProperty Plus20SecsProperty =
+            DependencyProperty.Register("Plus20Secs", typeof(ICommand), typeof(PlayerControl), new UIPropertyMetadata(null));
+        public ICommand Plus20Secs
+        {
+            get { return (ICommand)GetValue(Plus20SecsProperty); }
+            set { SetValue(Plus20SecsProperty, value); }
+        }
     }
 }

@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -59,10 +60,17 @@
       <DependentUpon>Player.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\PositionToTimeConverter.cs" />
+    <Compile Include="LyricsFetcher.xaml.cs">
+      <DependentUpon>LyricsFetcher.xaml</DependentUpon>
+    </Compile>
     <Compile Include="rTunesCommands.cs" />
     <Compile Include="Converter\StringToImageConverter.cs" />
     <Compile Include="ViewModels\FooViewModel.cs" />
     <Compile Include="ViewModels\NotifyBase.cs" />
+    <Page Include="LyricsFetcher.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -98,6 +106,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -112,6 +121,10 @@
     <ProjectReference Include="..\iTunes\iTunesWrapper.csproj">
       <Project>{e2871459-e101-4153-9e35-69525265626b}</Project>
       <Name>iTunesWrapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\rLyrics\rLyrics.csproj">
+      <Project>{5cfb52c4-c62e-4ab3-9309-321c58f62a3a}</Project>
+      <Name>rLyrics</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

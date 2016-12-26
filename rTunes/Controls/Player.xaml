@@ -19,7 +19,11 @@
         </Grid.Background>
         <Button x:Name="BtnPrev" Content="&lt;&lt;" Command="{Binding Prev, ElementName=root}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="BtnPlayPause" Content="Play" Command="{Binding PlayPause, ElementName=root}" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="BtnNext" Content="&gt;&gt;" Command="{Binding Next, ElementName=root}" HorizontalAlignment="Left" Margin="170,10,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="BtnNext" Content="&gt;&gt;" Command="{Binding Next, ElementName=root}" HorizontalAlignment="Left" Margin="170,10,0,0" VerticalAlignment="Top" Width="75">
+            <Button.InputBindings>
+                <MouseBinding Gesture="RightClick" Command="{Binding Plus20Secs, ElementName=root}" />
+            </Button.InputBindings>
+        </Button>
         <ProgressBar Height="10" Margin="250,14,10,0" VerticalAlignment="Top" Value="{Binding Position}" Maximum="{Binding MaxPosition}"/>
         <Label x:Name="lblTime1" Content="{Binding Path=Position, Converter={StaticResource positionConverter}}" Margin="250,30,216,0" VerticalAlignment="Top" Width="162" Height="22" FontSize="10"/>
         <Label x:Name="lblTime2" Content="{Binding Path=MaxPosition, Converter={StaticResource positionConverter}}" Margin="444,30,10,0" 

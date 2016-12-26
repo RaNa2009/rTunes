@@ -106,8 +106,13 @@ namespace rTunes
                 {
                     _testCommand = new RelayCommand(param =>
                     {
-                        var pl = iTunesPlayer.GetCurrentPlaylist();
-                        Debug.WriteLine(pl.TrackCount);
+                        //var pl = iTunesPlayer.GetCurrentPlaylist();
+                        //Debug.WriteLine(pl.TrackCount);
+
+                        //App.Lyrics.SearchFor(CurrentTrack.Name, CurrentTrack.Artist);
+                        App.MyLyrics.SearchFor(CurrentTrack.Name, CurrentTrack.Artist);
+
+
                     }, param => true);
                 }
                 return _testCommand;
