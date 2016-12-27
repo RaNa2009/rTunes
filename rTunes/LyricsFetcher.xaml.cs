@@ -8,9 +8,9 @@ namespace rTunes
     /// <summary>
     /// Interaction logic for LyricsFetcher.xaml
     /// </summary>
-    public partial class LyricsFetcher : Window
+    public partial class Browser : Window
     {
-        public LyricsFetcher()
+        public Browser()
         {
             InitializeComponent();
 

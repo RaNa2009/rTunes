@@ -10,7 +10,7 @@ namespace rTunes
     /// </summary>
     public partial class App : Application
     {
-        public static LyricsFetcher Lyrics = new LyricsFetcher();
+        public static Browser Lyrics = new Browser();
 
         public static Fetcher MyLyrics = new Fetcher();
 

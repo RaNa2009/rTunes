@@ -18,6 +18,8 @@ namespace iTunesWrapper
         public int SampleRate { get; set; }
         public int BitRate { get; set; }
         public int Duration { get; set; }
+        public int HighID { get; set; }
+        public int LowID { get; set; }
         public Track() { }
 
         public Track(IITTrack track, bool SaveArtworkToDisk = true)

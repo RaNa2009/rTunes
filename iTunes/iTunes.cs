@@ -100,9 +100,22 @@ namespace iTunesWrapper
             if (currentTrack != null)
             {
                 Track foo = new Track(currentTrack);
+
+                int high, low;
+                _iTunes.GetITObjectPersistentIDs(currentTrack, out high, out low);
+                foo.HighID = high;
+                foo.LowID = low;
+
                 return foo;
             }
             return null;
+        }
+
+        public void SaveLyrics(Track track, string lyrics)
+        {
+            IITTrack foo = _iTunes.LibraryPlaylist.Tracks.ItemByPersistentID[track.HighID, track.LowID];
+            var bar = foo as IITFileOrCDTrack;
+            bar.Lyrics = lyrics;
         }
         public Playlist GetCurrentPlaylist()
         {
