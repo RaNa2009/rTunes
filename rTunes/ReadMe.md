@@ -27,4 +27,10 @@ create database foo on (name=‘foo’, filename=‘c:\DBs\foo.mdf’)
 |http://lyrics.wikia.com/wiki/ | artist:song (Replace whitespace with _)
 |http://www.lyricsmode.com/ | search.php?search=u2%20exit
 |Shazam | |
+|http://www.golyr.de
+|http://www.clipfish.de
+|http://www.songtextemania.com
+|http://www.allthelyrics.com
+|http://genius.com
+|http://www.metrolyrics.com
 

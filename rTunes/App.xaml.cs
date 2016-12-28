@@ -10,8 +10,7 @@ namespace rTunes
     /// </summary>
     public partial class App : Application
     {
-        public static Browser Lyrics = new Browser();
-
+        public static Browser MyBrowser = new Browser();
         public static Fetcher MyLyrics = new Fetcher();
 
         public App() : base()
@@ -19,8 +18,11 @@ namespace rTunes
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(GlobalExceptionHandler);
             Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(AppDispatcherUnhandledException);
+        }
 
-            //Lyrics.Show();
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
         }
 
         #region Global Exception Handlers

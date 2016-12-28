@@ -20,106 +20,85 @@ namespace rLyrics
             this.Lyrics = lyrics;
         }
     }
-
-
+    
     public class Fetcher
     {
+        private readonly string[] LyricsSites = { "golyr.de", "azlyrics.com" };
+
         public event EventHandler<rLyricsEventArgs> NewLyrics;
-
-        public void SearchFor(string name, string artist)
-        {
-            var strSearch = "http://" + $"www.google.de/search?q=lyrics+" + HttpUtility.UrlEncode(name) + "+" + HttpUtility.UrlEncode(artist);
-
-            WebClient wc = new WebClient();
-            wc.DownloadStringCompleted += DownloadStringCompleted;
-            wc.DownloadStringAsync(new System.Uri(strSearch));
-        }
 
         public async Task<int> SearchForAsync(string name, string artist,  IProgress<string> progress)
         {
+            HtmlDocument docResults = new HtmlDocument();
+            HtmlDocument docLyrics = new HtmlDocument();
             WebClient wc = new WebClient();
+            wc.Encoding = Encoding.UTF8;
+
+            progress.Report($"Googling for {name}");
+
+            // Asynchronously fetch Google search results via HTTP
             var strSearch = "http://" + $"www.google.de/search?q=lyrics+" + HttpUtility.UrlEncode(name) + "+" + HttpUtility.UrlEncode(artist);
-            string html = await wc.DownloadStringTaskAsync(new System.Uri(strSearch));
+            string html = await wc.DownloadStringTaskAsync(new Uri(strSearch));
+
             progress.Report("Received Google search results...");
 
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(html);
+            // Parse Google HTML result into list of URLs
+            docResults.LoadHtml(html);
 
-            var nodes = doc.DocumentNode.SelectNodes("//div[@class='g']//h3[@class='r']/a/@href");
-            var urls = nodes == null
-                ? new List<string>()
-                : nodes.Select((n, i) => n.Attributes[0].Value).ToList();
+            // XPath to fetch raw google result urls (this will break if Google changes its results page!)
+            var nodes = docResults.DocumentNode.SelectNodes("//div[@class='g']//h3[@class='r']/a/@href");
 
-            var myRegEx = new Regex(@"http.*?(?=&amp)");
+            var rawGoogleUrls = nodes == null ? new List<string>()
+                                              : nodes.Select((n, i) => n.Attributes[0].Value);
 
-            foreach (var s in urls)
+            var cleanUrls = rawGoogleUrls.Select(url => new Regex(@"http.*?(?=&amp)").Match(url).Value).ToList();
+
+            // Check each results for known lyrics sites
+            foreach (var url in cleanUrls)
             {
-                var match = myRegEx.Match(s);
-                progress.Report(match.Value);
-
-                if (match.Value.Contains("azlyrics"))
+                progress.Report($"Prcocessing Google Result: {url}");
+                foreach (var site in LyricsSites)
                 {
-                    Debug.WriteLine("Searching azlyrics...");
-                    WebClient wc2 = new WebClient();
-                    wc2.DownloadStringCompleted += LyricsDownloadStringCompleted;
-                    wc2.Encoding = Encoding.UTF8;
-                    wc2.DownloadStringAsync(new System.Uri(match.Value));
-                    continue;
-                }
+                    if (url.Contains(site))
+                    {
+                        // Known lyrics site found, try to get lyrics
+                        progress.Report($"Trying to get lyrics from {site}...");
 
+                        html = await wc.DownloadStringTaskAsync(new Uri(url));
+                        docLyrics.LoadHtml(html);
+                        ParseLyrics(docLyrics, site);
+                    }
+                }
             }
             return 0;
         }
 
-        private void DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+        private void ParseLyrics(HtmlDocument doc, string site)
         {
-            string html = e.Result;
+            string result = "";
 
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(html);
-
-            var nodes = doc.DocumentNode.SelectNodes("//div[@class='g']//h3[@class='r']/a/@href");
-
-            var urls = nodes == null
-                ? new List<string>()
-                : nodes.Select((n, i) => n.Attributes[0].Value).ToList();
-
-            var myRegEx = new Regex(@"http.*?(?=&amp)");
-
-            foreach (var s in urls)
-            {
-                var match = myRegEx.Match(s);
-                Debug.WriteLine(match.Value);
-
-                if (match.Value.Contains("azlyrics"))
-                {
-                    Debug.WriteLine("Searching azlyrics...");
-                    WebClient wc2 = new WebClient();
-                    wc2.DownloadStringCompleted += LyricsDownloadStringCompleted;
-                    wc2.Encoding = Encoding.UTF8;
-                    wc2.DownloadStringAsync(new System.Uri(match.Value));
-                    continue;
-                }
-            }
-        }
-
-        private void LyricsDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
-        {
-            string html = e.Result;
-
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(html);
             RemoveComments(doc);
 
-            // azlyrics
-            var nodes = doc.DocumentNode.SelectNodes("//div[not(@*)]");
-            var test = nodes[0].InnerText;
+            if (site == LyricsSites[0])         // golyr
+            {
+                var nodes = doc.DocumentNode.SelectNodes("//div[@id='lyrics']");
+                result = nodes[0].InnerText;
+            }
+            else if (site == LyricsSites[1])    // azlyrics
+            {
+                var nodes = doc.DocumentNode.SelectNodes("//div[not(@*)]");
+                result = nodes[0].InnerText;
+            }
+            else if (site == LyricsSites[2])
+            {
+                var nodes = doc.DocumentNode.SelectNodes("");
+                result = nodes[0].InnerText;
+            }
 
-            Debug.WriteLine(test);
+            result.Trim();
 
-            NewLyrics?.Invoke(this, new rLyricsEventArgs(test));
+            NewLyrics?.Invoke(this, new rLyricsEventArgs(result));
         }
-
         private void RemoveComments(HtmlDocument doc)
         {
             HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//comment()");

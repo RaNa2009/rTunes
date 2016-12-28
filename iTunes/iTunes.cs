@@ -24,7 +24,7 @@ namespace iTunesWrapper
 
         private iTunes()
         {
-            _iTunes = new iTunesApp();
+            _iTunes = new iTunesAppClass();
             _iTunes.OnPlayerPlayEvent += new _IiTunesEvents_OnPlayerPlayEventEventHandler(PlayerPlayEvent);
             _iTunes.OnPlayerStopEvent += new _IiTunesEvents_OnPlayerStopEventEventHandler(PlayerStopEvent);
         }

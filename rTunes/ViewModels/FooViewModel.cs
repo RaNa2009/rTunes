@@ -44,7 +44,6 @@ namespace rTunes
 
             PositionTimer = new Timer(500);
             PositionTimer.Elapsed += new ElapsedEventHandler(PollPosition);
-            PositionTimer.Enabled = true;
 
             CurrentTrack = iTunesPlayer.GetCurrentTrack();
             Lyrics = CurrentTrack?.Lyrics;
@@ -60,12 +59,14 @@ namespace rTunes
         }
         private void PlayHandler(object sender, iTunesEventArgs args)
         {
+            PositionTimer.Enabled = true;
             CurrentTrack = iTunesPlayer.GetCurrentTrack();
             Lyrics = CurrentTrack.Lyrics;
             Debug.WriteLine($"[{CurrentTrack.Name}, {CurrentTrack.Artist}] [Index {CurrentTrack.PlayOrderIndex}] [BitRate {CurrentTrack.BitRate}] [SampleRate {CurrentTrack.SampleRate}]");
         }
         private void StopHandler(object sender, iTunesEventArgs args)
         {
+            PositionTimer.Enabled = false;
             Debug.WriteLine("Stopping: " + args.Title);
         }
         private void NewLyricsHandler(object sender, rLyrics.rLyricsEventArgs e)
@@ -77,7 +78,10 @@ namespace rTunes
 
         public async void Foobar()
         {
-            int dummy = await App.MyLyrics.SearchForAsync(CurrentTrack.Name, CurrentTrack.Artist, new Progress<string>(msg => Debug.WriteLine(msg)));
+            int dummy = await App.MyLyrics.SearchForAsync(
+                CurrentTrack.Name, 
+                CurrentTrack.Artist, 
+                new Progress<string>(msg => Debug.WriteLine(msg)));
         }
 
         protected virtual void Dispose(bool disposing)
@@ -86,6 +90,7 @@ namespace rTunes
             {
                 if (disposing)
                 {
+                    Debug.WriteLine("Stopping iTunes Timer");
                     PositionTimer.Enabled = false;
                 }
             }
@@ -96,6 +101,7 @@ namespace rTunes
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        
         #region Commands
         RelayCommand _playpauseCommand; public ICommand PlayPauseCommand
         {
@@ -151,13 +157,22 @@ namespace rTunes
                     {
                         //var pl = iTunesPlayer.GetCurrentPlaylist();
                         //Debug.WriteLine(pl.TrackCount);
-
-                        //App.MyLyrics.SearchFor(CurrentTrack.Name, CurrentTrack.Artist);
-                        Foobar();
-
                     }, param => true);
                 }
                 return _testCommand;
+            }
+        }
+        RelayCommand _fetchLyricsCommand; public ICommand FetchLyricsCommand
+        {
+            get
+            {
+                if (_fetchLyricsCommand == null)
+                {
+                    _fetchLyricsCommand = new RelayCommand(param => {
+                        Foobar();
+                    }, param => true);
+                }
+                return _fetchLyricsCommand;
             }
         }
         RelayCommand _saveLyricsCommand; public ICommand SaveLyricsCommand
