@@ -8,11 +8,11 @@
         x:Class="rTunes.MainWindow"
         mc:Ignorable="d"
         Title="rTunes" 
-        Height="528" Width="744" Left="1000" Top="100">
+        Height="705" Width="744" Left="1000" Top="100">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300" />
-            <ColumnDefinition Width="0.7*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="60" />
@@ -27,9 +27,9 @@
                               Position="{Binding CurrentPosition}"
                               MaxPosition="{Binding CurrentTrack.Duration}"
                               HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="57" Width="653"/>
-        <Button Grid.Column="1" 
+        <Button Grid.Row="0" Grid.Column="1" 
                 Content="Test" Command="{Binding TestCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="58" Height="57"/>
-        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" >
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Top" Orientation="Vertical">
             <StackPanel.Resources>
                 <local:StringToImageConverter x:Key="imageConverter" />
             </StackPanel.Resources>

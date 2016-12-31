@@ -3,5 +3,5 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:rTunes"
              xmlns:iTunes="clr-namespace:iTunesWrapper;assembly=iTunesWrapper"
-             StartupUri="MainWindow.xaml">
+             >
 </Application>

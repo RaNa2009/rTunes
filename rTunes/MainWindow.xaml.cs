@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace rTunes
 {
@@ -7,10 +8,10 @@ namespace rTunes
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(Common.ILogger log)
         {
+            DataContext = new MainViewModel(log);
             InitializeComponent();
-            DataContext = new FooViewModel();
         }
     }
 }

@@ -56,18 +56,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\Logger.cs" />
+    <Compile Include="Common\LoggerWindow.xaml.cs">
+      <DependentUpon>LoggerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Player.xaml.cs">
       <DependentUpon>Player.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\PositionToTimeConverter.cs" />
-    <Compile Include="LyricsFetcher.xaml.cs">
-      <DependentUpon>LyricsFetcher.xaml</DependentUpon>
+    <Compile Include="Browser.xaml.cs">
+      <DependentUpon>Browser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="rTunesCommands.cs" />
+    <Compile Include="Common\rTunesCommands.cs" />
     <Compile Include="Converter\StringToImageConverter.cs" />
+    <None Include="__oldCode\LogViewModel.cs" />
     <Compile Include="ViewModels\FooViewModel.cs" />
     <Compile Include="ViewModels\NotifyBase.cs" />
-    <Page Include="LyricsFetcher.xaml">
+    <Page Include="Browser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Common\LoggerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

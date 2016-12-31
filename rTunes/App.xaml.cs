@@ -10,6 +10,7 @@ namespace rTunes
     /// </summary>
     public partial class App : Application
     {
+        public static Common.Logger MyLogger = new Common.Logger();
         public static Browser MyBrowser = new Browser();
         public static Fetcher MyLyrics = new Fetcher();
 
@@ -22,7 +23,8 @@ namespace rTunes
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
+            MainWindow wnd = new MainWindow(MyLogger);
+            wnd.Show();
         }
 
         #region Global Exception Handlers

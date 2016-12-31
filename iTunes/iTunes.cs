@@ -1,9 +1,9 @@
 ﻿using iTunesLib;
 using Microsoft.VisualStudio;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+
 
 namespace iTunesWrapper
 {
@@ -15,7 +15,6 @@ namespace iTunesWrapper
             this.Title = title;
         }
     }
-
 
     public class iTunes
     {
@@ -48,6 +47,7 @@ namespace iTunesWrapper
 
         public event EventHandler<iTunesEventArgs> Play;
         public event EventHandler<iTunesEventArgs> Stop;
+        public event EventHandler<iTunesEventArgs> Log;
 
         private void PlayerPlayEvent(object iTrack)
         {
@@ -74,6 +74,7 @@ namespace iTunesWrapper
         public void Next()
         {
             _iTunes.NextTrack();
+            Log?.Invoke(this, new iTunesEventArgs("Next"));
         }
         public int GetPosition()
         {
@@ -113,6 +114,8 @@ namespace iTunesWrapper
 
         public void SaveLyrics(Track track, string lyrics)
         {
+            Log?.Invoke(this, new iTunesEventArgs("Saving lyrics."));
+
             IITTrack foo = _iTunes.LibraryPlaylist.Tracks.ItemByPersistentID[track.HighID, track.LowID];
             var bar = foo as IITFileOrCDTrack;
             bar.Lyrics = lyrics;

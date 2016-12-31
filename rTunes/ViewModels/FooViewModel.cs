@@ -1,21 +1,21 @@
 ﻿using iTunesWrapper;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Timers;
 using System;
 
 namespace rTunes
 {
-    public class FooViewModel : NotifyBase, IDisposable
+    public class MainViewModel : NotifyBase, IDisposable
     {
+        private Common.ILogger _log;
         private bool disposed;
-
+        
         private Timer PositionTimer;
 
-        public static iTunes iTunesPlayer = iTunes.Instance;
+        private static iTunes iTunesPlayer = iTunes.Instance;
 
+        #region DependencyProperties
         private int _position;
         public int CurrentPosition {
             get { return _position; }
@@ -34,22 +34,40 @@ namespace rTunes
             get { return _lyrics; }
             set { _lyrics = value; Changed(); }
         }
+        #endregion
 
-        public FooViewModel()
+        public MainViewModel(Common.ILogger log)
         {
+            _log = log;
+
             iTunesPlayer.Play += PlayHandler;
             iTunesPlayer.Stop += StopHandler;
+            iTunesPlayer.Log += LogHandler;
 
             App.MyLyrics.NewLyrics += NewLyricsHandler;
 
             PositionTimer = new Timer(500);
-            PositionTimer.Elapsed += new ElapsedEventHandler(PollPosition);
+            PositionTimer.Elapsed += new ElapsedEventHandler(PostionHandler);
 
             CurrentTrack = iTunesPlayer.GetCurrentTrack();
             Lyrics = CurrentTrack?.Lyrics;
         }
+        public async void FetchLyrics()
+        {
+            bool result = await App.MyLyrics.SearchForAsync(CurrentTrack.Name, CurrentTrack.Artist,
+                new Progress<string>(msg => _log.Log(msg, "Fetcher")));
 
-        private void PollPosition(object source, ElapsedEventArgs e)
+            if (!result)
+                Log("Could not fetch lyrics.");
+        }
+
+        private void Log(string msg)
+        {
+            _log.Log(msg, GetType().Name);
+        }
+
+        #region Eventhandler
+        private void PostionHandler(object source, ElapsedEventArgs e)
         {
             iTunesPlayer.GetPosition();
             if (CurrentTrack != null)
@@ -62,28 +80,27 @@ namespace rTunes
             PositionTimer.Enabled = true;
             CurrentTrack = iTunesPlayer.GetCurrentTrack();
             Lyrics = CurrentTrack.Lyrics;
-            Debug.WriteLine($"[{CurrentTrack.Name}, {CurrentTrack.Artist}] [Index {CurrentTrack.PlayOrderIndex}] [BitRate {CurrentTrack.BitRate}] [SampleRate {CurrentTrack.SampleRate}]");
+            Log($"[{CurrentTrack.Name}, {CurrentTrack.Artist}] [Index {CurrentTrack.PlayOrderIndex}] [BitRate {CurrentTrack.BitRate}] [SampleRate {CurrentTrack.SampleRate}]");
         }
         private void StopHandler(object sender, iTunesEventArgs args)
         {
             PositionTimer.Enabled = false;
-            Debug.WriteLine("Stopping: " + args.Title);
+            Log("Stopping: " + args.Title);
+        }
+        private void LogHandler(object sender, iTunesEventArgs args)
+        {
+            _log.Log(args.Title, "iTunesWrapper");
         }
         private void NewLyricsHandler(object sender, rLyrics.rLyricsEventArgs e)
         {
-            Debug.WriteLine("Received new lyrics!");
+            Log("NewLyricsHandler was called");
             Lyrics = e.Lyrics;
-
+            if (e.Lyrics.Length > 0)
+                iTunesPlayer.SaveLyrics(CurrentTrack, Lyrics);
         }
+        #endregion
 
-        public async void Foobar()
-        {
-            int dummy = await App.MyLyrics.SearchForAsync(
-                CurrentTrack.Name, 
-                CurrentTrack.Artist, 
-                new Progress<string>(msg => Debug.WriteLine(msg)));
-        }
-
+        #region Lifecycle
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)
@@ -101,7 +118,8 @@ namespace rTunes
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        
+        #endregion
+
         #region Commands
         RelayCommand _playpauseCommand; public ICommand PlayPauseCommand
         {
@@ -121,6 +139,7 @@ namespace rTunes
                 if (_nextCommand == null)
                 {
                     _nextCommand = new RelayCommand(param => iTunesPlayer.Next(), param => true);
+                    //(RoutedCommnad)_nextCommand.InputGestures.Add(new KeyGesture(Key.Right));
                 }
                 return _nextCommand;
             }
@@ -169,7 +188,7 @@ namespace rTunes
                 if (_fetchLyricsCommand == null)
                 {
                     _fetchLyricsCommand = new RelayCommand(param => {
-                        Foobar();
+                        FetchLyrics();
                     }, param => true);
                 }
                 return _fetchLyricsCommand;

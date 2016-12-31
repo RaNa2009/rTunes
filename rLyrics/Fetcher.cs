@@ -21,23 +21,21 @@ namespace rLyrics
         }
     }
     
-    public class Fetcher
+    public partial class Fetcher
     {
-        private readonly string[] LyricsSites = { "golyr.de", "azlyrics.com" };
-
         public event EventHandler<rLyricsEventArgs> NewLyrics;
 
-        public async Task<int> SearchForAsync(string name, string artist,  IProgress<string> progress)
+        public async Task<bool> SearchForAsync(string name, string artist,  IProgress<string> progress)
         {
             HtmlDocument docResults = new HtmlDocument();
             HtmlDocument docLyrics = new HtmlDocument();
             WebClient wc = new WebClient();
             wc.Encoding = Encoding.UTF8;
 
-            progress.Report($"Googling for {name}");
+            progress.Report($"Ask Google about '{name}' by '{artist}'");
 
             // Asynchronously fetch Google search results via HTTP
-            var strSearch = "http://" + $"www.google.de/search?q=lyrics+" + HttpUtility.UrlEncode(name) + "+" + HttpUtility.UrlEncode(artist);
+            var strSearch = "http://www.google.de/search?q=lyrics+" + HttpUtility.UrlEncode(name) + "+" + HttpUtility.UrlEncode(artist);
             string html = await wc.DownloadStringTaskAsync(new Uri(strSearch));
 
             progress.Report("Received Google search results...");
@@ -57,47 +55,56 @@ namespace rLyrics
             foreach (var url in cleanUrls)
             {
                 progress.Report($"Prcocessing Google Result: {url}");
+                //foreach (var site in new string[] { "metrolyrics.com" })
                 foreach (var site in LyricsSites)
                 {
-                    if (url.Contains(site))
+                    if (url.Contains(site.Key))
                     {
                         // Known lyrics site found, try to get lyrics
-                        progress.Report($"Trying to get lyrics from {site}...");
+                        progress.Report($"Trying to get lyrics from '{site}'");
+
+                        if (site.Key == "songlyrics.com")
+                        {
+                            wc.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+                        }
+                        else
+                        {
+                            wc.Headers.Clear();
+                        }
 
                         html = await wc.DownloadStringTaskAsync(new Uri(url));
+
+                        progress.Report("Parsing result from lyrics site.");
                         docLyrics.LoadHtml(html);
-                        ParseLyrics(docLyrics, site);
+
+                        if (ParseLyrics(docLyrics, site.Key, progress))
+                            return true;
                     }
                 }
             }
-            return 0;
+            return false;
         }
 
-        private void ParseLyrics(HtmlDocument doc, string site)
+        private List<MyDelegate<HtmlDocument, string, bool>> test = new List<MyDelegate<HtmlDocument, string, bool>>();
+        private bool ParseLyrics(HtmlDocument doc, string site, IProgress<string> progress)
         {
+            bool Found = false;
             string result = "";
 
             RemoveComments(doc);
 
-            if (site == LyricsSites[0])         // golyr
-            {
-                var nodes = doc.DocumentNode.SelectNodes("//div[@id='lyrics']");
-                result = nodes[0].InnerText;
-            }
-            else if (site == LyricsSites[1])    // azlyrics
-            {
-                var nodes = doc.DocumentNode.SelectNodes("//div[not(@*)]");
-                result = nodes[0].InnerText;
-            }
-            else if (site == LyricsSites[2])
-            {
-                var nodes = doc.DocumentNode.SelectNodes("");
-                result = nodes[0].InnerText;
-            }
+            Found = LyricsSites[site](doc, out result);
 
-            result.Trim();
+            result = HttpUtility.HtmlDecode(result);
+            result = result.Trim();
+            result = result.Replace("\n\n\n\n", "\n");
 
-            NewLyrics?.Invoke(this, new rLyricsEventArgs(result));
+            if (Found)
+            {
+                progress.Report("Lyrics fetched.");
+                NewLyrics?.Invoke(this, new rLyricsEventArgs(result));
+            }
+            return Found;
         }
         private void RemoveComments(HtmlDocument doc)
         {
